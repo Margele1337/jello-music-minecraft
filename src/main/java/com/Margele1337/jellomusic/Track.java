@@ -13,4 +13,12 @@ public class Track {
     public Track(String title) {
         this(title, 0);
     }
+
+    public String title() {
+        return this.title;
+    }
+
+    public int seconds() {
+        return this.seconds;
+    }
 }

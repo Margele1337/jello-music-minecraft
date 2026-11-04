@@ -26,7 +26,8 @@ public class ClientProxy extends CommonProxy {
         if (mc.thePlayer != null && !playedJoinSound) {
             playedJoinSound = true;
             mc.thePlayer.playSound("random.levelup", 1.0F, 1.0F);
-            JelloMusic.LOG.info("Player joined world!");
+            Track first = MusicPlayer.getFirst();
+            JelloMusic.LOG.info("Now playing: " + first.title + " - " + first.seconds + "s");
         } else if (mc.thePlayer == null) {
             playedJoinSound = false;
         }
