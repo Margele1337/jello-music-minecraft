@@ -2,8 +2,8 @@ package com.margele1337.jellomusic;
 
 public class Track {
 
-    public final String title;
-    public final int seconds;
+    private final String title;
+    private final int seconds;
 
     public Track(String title, int seconds) {
         this.title = title;
