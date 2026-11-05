@@ -51,6 +51,7 @@ public class ClientProxy extends CommonProxy {
                     currentSound = null;
                 }
                 playedJoinSound = false;
+                MusicPlayer.reset();
             }
     }
 }

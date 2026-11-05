@@ -16,5 +16,14 @@
         "stream": true
       }
     ]
+  },
+  "song2": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "jellomusic:song2",
+        "stream": true
+      }
+    ]
   }
 }
