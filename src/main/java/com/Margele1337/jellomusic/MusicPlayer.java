@@ -6,6 +6,7 @@ import java.util.List;
 public class MusicPlayer {
 
     private static List<Track> playlist = new ArrayList<>();
+    public static int currentIndex = 0;
 
     public static void add(Track track) {
         playlist.add(track);
@@ -13,6 +14,14 @@ public class MusicPlayer {
 
     public static Track getFirst() {
         return playlist.get(0);
+    }
+
+    public static Track next() {
+        currentIndex++;
+        if (currentIndex >= playlist.size()) {
+            return null;
+        }
+        return playlist.get(currentIndex);
     }
 
     public static void logAll() {

@@ -13,6 +13,13 @@ public class ClientProxy extends CommonProxy {
     private boolean playedJoinSound = false;
     private ISound currentSound = null;
 
+    private void playTrack(Minecraft mc, Track track) {
+        currentSound = new SongSound(track.soundName());
+        mc.getSoundHandler()
+            .playSound(currentSound);
+        JelloMusic.LOG.info("Now playing: " + track.title() + " - " + track.seconds() + "s");
+    }
+
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
@@ -27,18 +34,23 @@ public class ClientProxy extends CommonProxy {
 
         if (mc.thePlayer != null && !playedJoinSound) {
             playedJoinSound = true;
-            Track first = MusicPlayer.getFirst();
-            currentSound = new SongSound(first.soundName());
-            mc.getSoundHandler()
-                .playSound(currentSound);
-            JelloMusic.LOG.info("Now playing: " + first.title() + " - " + first.seconds() + "s");
-        } else if (mc.thePlayer == null) {
-            if (currentSound != null) {
-                mc.getSoundHandler()
-                    .stopSound(currentSound);
-                currentSound = null;
+            playTrack(mc, MusicPlayer.getFirst());
+        } else if (currentSound != null && !mc.getSoundHandler()
+            .isSoundPlaying(currentSound)) {
+                Track next = MusicPlayer.next();
+                if (next == null) {
+                    currentSound = null;
+                    JelloMusic.LOG.info("No more tracks in playlist.");
+                } else {
+                    playTrack(mc, next);
+                }
+            } else if (mc.thePlayer == null) {
+                if (currentSound != null) {
+                    mc.getSoundHandler()
+                        .stopSound(currentSound);
+                    currentSound = null;
+                }
+                playedJoinSound = false;
             }
-            playedJoinSound = false;
-        }
     }
 }
