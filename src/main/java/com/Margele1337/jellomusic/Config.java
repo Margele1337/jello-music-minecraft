@@ -16,8 +16,7 @@ public class Config {
         greeting = configuration.getString("greeting", Configuration.CATEGORY_GENERAL, greeting, "How shall I greet?");
         volume = configuration
             .getInt("volume", Configuration.CATEGORY_GENERAL, volume, 0, 100, "Playback volume (0-100)");
-        pitch = configuration
-            .getInt("pitch", Configuration.CATEGORY_GENERAL, pitch, 50, 200, "Playback pitch (0-100)");
+        pitch = configuration.getInt("pitch", Configuration.CATEGORY_GENERAL, pitch, 50, 200, "Playback pitch (0-100)");
         if (configuration.hasChanged()) {
             configuration.save();
         }

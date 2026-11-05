@@ -1,0 +1,11 @@
+{
+  "joinsound": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "jellomusic:joinsound",
+        "stream": false
+      }
+    ]
+  }
+}
