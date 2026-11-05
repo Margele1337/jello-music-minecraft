@@ -16,9 +16,9 @@ public class CommonProxy {
         JelloMusic.LOG.info("I am Jello-music at version " + Tags.VERSION);
         JelloMusic.LOG.info("default music volume:" + Config.volume);
 
-        MusicPlayer.add(new Track("晴天", 269));
-        MusicPlayer.add(new Track("Lemon", 257));
-        MusicPlayer.add(new Track("111", 222));
+        MusicPlayer.add(new Track("晴天", 269, "jellomusic:song1"));
+        MusicPlayer.add(new Track("Lemon", 257, "jellomusic:joinsound"));
+        MusicPlayer.add(new Track("111", 222, "jellomusic:song1"));
         MusicPlayer.logAll();
     }
 

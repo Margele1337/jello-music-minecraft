@@ -7,5 +7,14 @@
         "stream": false
       }
     ]
+  },
+  "song1": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "jellomusic:song1",
+        "stream": true
+      }
+    ]
   }
 }
