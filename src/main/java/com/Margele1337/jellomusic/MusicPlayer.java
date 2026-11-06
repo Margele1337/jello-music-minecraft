@@ -1,5 +1,9 @@
 package com.margele1337.jellomusic;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,35 @@ public class MusicPlayer {
 
     public static void reset() {
         currentIndex = 0;
+    }
+
+    public static boolean isEmpty() {
+        return playlist.isEmpty();
+    }
+
+    public static void loadPlaylist(File file) {
+        playlist.clear();
+        if (!file.exists()) {
+            JelloMusic.LOG.warn("Playlist file " + file.getPath() + " does not exist.");
+            return;
+        }
+        try {
+            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+            for (String line : lines) {
+                if (line.isEmpty()) continue;
+                String[] parts = line.split(",");
+                if (parts.length != 3) {
+                    JelloMusic.LOG.error("Invalid playlist entry: " + line);
+                    continue;
+                }
+                String title = parts[0].trim();
+                String soundName = parts[1].trim();
+                int seconds = Integer.parseInt(parts[2].trim());
+                playlist.add(new Track(title, seconds, soundName));
+            }
+        } catch (IOException e) {
+            JelloMusic.LOG.error("Error loading playlist file: ", e);
+        }
     }
 
     public static void logAll() {
