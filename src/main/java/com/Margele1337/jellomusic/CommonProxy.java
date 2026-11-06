@@ -1,5 +1,7 @@
 package com.margele1337.jellomusic;
 
+import java.io.File;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -16,9 +18,8 @@ public class CommonProxy {
         JelloMusic.LOG.info("I am Jello-music at version " + Tags.VERSION);
         JelloMusic.LOG.info("default music volume:" + Config.volume);
 
-        MusicPlayer.add(new Track("Amnesia", 13, "jellomusic:joinsound"));
-        MusicPlayer.add(new Track("会跳舞的西装客", 21, "jellomusic:song1"));
-        MusicPlayer.add(new Track("Mr Broken Heart", 20, "jellomusic:song2"));
+        File playlistFile = new File(event.getModConfigurationDirectory(), "jellomusic/music.txt");
+        MusicPlayer.loadPlaylist(playlistFile);
         MusicPlayer.logAll();
     }
 

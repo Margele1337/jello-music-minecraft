@@ -49,7 +49,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer != null && !playedJoinSound) {
+        if (mc.thePlayer != null && !playedJoinSound && !MusicPlayer.isEmpty()) {
             playedJoinSound = true;
             playTrack(mc, MusicPlayer.getFirst());
         } else if (mc.thePlayer == null) {
@@ -74,7 +74,8 @@ public class ClientProxy extends CommonProxy {
             currentSound = null;
             JelloMusic.LOG.info("Stopped track.");
         }
-        if (currentSound != null && !mc.getSoundHandler()// 自动切换下一首
+        // 自动切换下一首
+        if (currentSound != null && !mc.getSoundHandler()
             .isSoundPlaying(currentSound)) {
             playNextTrack(mc);
         }
