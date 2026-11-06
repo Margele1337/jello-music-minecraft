@@ -49,6 +49,18 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer != null && !playedJoinSound) {
+            playedJoinSound = true;
+            playTrack(mc, MusicPlayer.getFirst());
+        } else if (mc.thePlayer == null) {
+            if (currentSound != null) {
+                mc.getSoundHandler()
+                    .stopSound(currentSound);
+                currentSound = null;
+            }
+            playedJoinSound = false;
+            MusicPlayer.reset();
+        }
         if (nextKey.isPressed() && mc.thePlayer != null) {
             if (currentSound != null) {
                 mc.getSoundHandler()
@@ -56,28 +68,15 @@ public class ClientProxy extends CommonProxy {
             }
             playNextTrack(mc);
         }
-        if (stopKey.isPressed() && mc.thePlayer != null) {
-            if (currentSound != null) {
-                mc.getSoundHandler()
-                    .stopSound(currentSound);
-            }
+        if (stopKey.isPressed() && mc.thePlayer != null && currentSound != null) {
+            mc.getSoundHandler()
+                .stopSound(currentSound);
             currentSound = null;
             JelloMusic.LOG.info("Stopped track.");
         }
-        if (mc.thePlayer != null && !playedJoinSound) {
-            playedJoinSound = true;
-            playTrack(mc, MusicPlayer.getFirst());
-        } else if (currentSound != null && !mc.getSoundHandler()
+        if (currentSound != null && !mc.getSoundHandler()// 自动切换下一首
             .isSoundPlaying(currentSound)) {
-                playNextTrack(mc);
-            } else if (mc.thePlayer == null) {
-                if (currentSound != null) {
-                    mc.getSoundHandler()
-                        .stopSound(currentSound);
-                    currentSound = null;
-                }
-                playedJoinSound = false;
-                MusicPlayer.reset();
-            }
+            playNextTrack(mc);
+        }
     }
 }
