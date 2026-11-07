@@ -43,27 +43,34 @@ public class MusicPlayer {
             return;
         }
         try {
-            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);//读取并格式化config/jellomusic/music.txt文件
+            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);// 读取并格式化config/jellomusic/music.txt文件
             for (String line : lines) {
                 if (line.isEmpty()) continue;
                 String[] parts = line.split(",");
                 if (parts.length != 3) {
-                    JelloMusic.LOG.warn("Invalid playlist entry: " + line);//警告无效的播放列表条目
+                    JelloMusic.LOG.warn("Invalid playlist entry: " + line);// 警告无效的播放列表条目
                     continue;
                 }
+                int seconds;
                 String title = parts[0].trim();
                 String soundName = parts[1].trim();
-                int seconds = Integer.parseInt(parts[2].trim());
+                try {
+                    seconds = Integer.parseInt(parts[2].trim());
+                } catch (NumberFormatException e) {
+                    JelloMusic.LOG.warn("Skipping line with invalid seconds: " + line);// 警告无效的播放列表条目
+                    continue;
+                }
                 playlist.add(new Track(title, seconds, soundName));
             }
+            JelloMusic.LOG.info("Loaded " + playlist.size() + " tracks from playlist file.");// 信息播放列表
         } catch (IOException e) {
-            JelloMusic.LOG.warn("Error loading playlist file: ", e);//抛出播放列表文件时出错异常
+            JelloMusic.LOG.warn("Error loading playlist file: ", e);// 抛出播放列表文件时出错异常
         }
     }
 
     public static void logAll() {
         for (Track track : playlist) {
-            JelloMusic.LOG.info(track.title() + " - " + track.seconds() + "s");//信息播放列表
+            JelloMusic.LOG.info(track.title() + " - " + track.seconds() + "s");// 信息播放列表
         }
     }
 }
