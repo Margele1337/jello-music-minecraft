@@ -26,13 +26,21 @@ public class ClientProxy extends CommonProxy {
         JelloMusic.LOG.info("Now playing: " + track.title() + " - " + track.seconds() + "s");
     }
 
-    private void playNextTrack(Minecraft mc) {
+    public void playNextTrack(Minecraft mc) {
         Track next = MusicPlayer.next();
         if (next == null) {
             currentSound = null;
             JelloMusic.LOG.info("No more tracks in playlist.");
         } else {
             playTrack(mc, next);
+        }
+    }
+
+    public void stopCurrentSound(Minecraft mc) {
+        if (currentSound != null) {
+            mc.getSoundHandler()
+                .stopSound(currentSound);
+            currentSound = null;
         }
     }
 
@@ -53,11 +61,7 @@ public class ClientProxy extends CommonProxy {
             playedJoinSound = true;
             playTrack(mc, MusicPlayer.getFirst());
         } else if (mc.thePlayer == null) {
-            if (currentSound != null) {
-                mc.getSoundHandler()
-                    .stopSound(currentSound);
-                currentSound = null;
-            }
+            stopCurrentSound(mc);
             playedJoinSound = false;
             MusicPlayer.reset();
         }
@@ -68,10 +72,8 @@ public class ClientProxy extends CommonProxy {
             }
             playNextTrack(mc);
         }
-        if (stopKey.isPressed() && mc.thePlayer != null && currentSound != null) {
-            mc.getSoundHandler()
-                .stopSound(currentSound);
-            currentSound = null;
+        if (stopKey.isPressed() && mc.thePlayer != null) {
+            stopCurrentSound(mc);
             JelloMusic.LOG.info("Stopped track.");
         }
         // 自动切换下一首
