@@ -31,7 +31,6 @@ public class MusicGui extends GuiScreen {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (button.id == 0) {
-            proxy.stopCurrentSound(mc);
             proxy.playNextTrack(mc);
         } else if (button.id == 1) {
             proxy.stopCurrentSound(mc);

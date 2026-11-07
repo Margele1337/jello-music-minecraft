@@ -28,6 +28,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void playNextTrack(Minecraft mc) {
+        stopCurrentSound(mc);
         Track next = MusicPlayer.next();
         if (next == null) {
             currentSound = null;
@@ -69,10 +70,6 @@ public class ClientProxy extends CommonProxy {
             MusicPlayer.reset();
         }
         if (nextKey.isPressed() && mc.thePlayer != null) {
-            if (currentSound != null) {
-                mc.getSoundHandler()
-                    .stopSound(currentSound);
-            }
             playNextTrack(mc);
         }
         if (stopKey.isPressed() && mc.thePlayer != null) {
