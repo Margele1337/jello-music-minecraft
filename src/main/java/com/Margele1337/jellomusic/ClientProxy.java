@@ -18,6 +18,7 @@ public class ClientProxy extends CommonProxy {
     private ISound currentSound = null;
     private KeyBinding nextKey = new KeyBinding("key.jellomusic.next", Keyboard.KEY_M, "key.categories.jellomusic");
     private KeyBinding stopKey = new KeyBinding("key.jellomusic.stop", Keyboard.KEY_N, "key.categories.jellomusic");
+    private KeyBinding panelKey = new KeyBinding("key.jellomusic.panel", Keyboard.KEY_G, "key.categories.jellomusic");
 
     private void playTrack(Minecraft mc, Track track) {
         currentSound = new SongSound(track.soundName());
@@ -52,6 +53,8 @@ public class ClientProxy extends CommonProxy {
             .register(this);
         ClientRegistry.registerKeyBinding(nextKey);
         ClientRegistry.registerKeyBinding(stopKey);
+        ClientRegistry.registerKeyBinding(panelKey);
+
     }
 
     @SubscribeEvent
@@ -80,6 +83,9 @@ public class ClientProxy extends CommonProxy {
         if (currentSound != null && !mc.getSoundHandler()
             .isSoundPlaying(currentSound)) {
             playNextTrack(mc);
+        }
+        if (panelKey.isPressed() && mc.thePlayer != null) {
+            mc.displayGuiScreen(new MusicGui(this));
         }
     }
 }
