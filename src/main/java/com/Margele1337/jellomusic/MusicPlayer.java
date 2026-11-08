@@ -28,6 +28,18 @@ public class MusicPlayer {
         return playlist.get(currentIndex);
     }
 
+    public static int size() {
+        return playlist.size();
+    }
+
+    public static Track get(int index) {
+        return playlist.get(index);
+    }
+
+    public static int getCurrentIndex() {
+        return currentIndex;
+    }
+
     public static void reset() {
         currentIndex = 0;
     }
