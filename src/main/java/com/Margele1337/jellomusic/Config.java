@@ -9,6 +9,8 @@ public class Config {
     public static String greeting = "Hello World";
     public static int volume = 100;
     public static int pitch = 100;
+    public static String kugouApiUrl = "http://localhost:3000";
+    public static String kugouCookie = "";
 
     public static void synchronizeConfiguration(File configFile) {
         Configuration configuration = new Configuration(configFile);
@@ -20,5 +22,12 @@ public class Config {
         if (configuration.hasChanged()) {
             configuration.save();
         }
+        kugouApiUrl = configuration
+            .getString("kugouApiUrl", Configuration.CATEGORY_GENERAL, kugouApiUrl, "KuGou API service address");
+        kugouCookie = configuration.getString(
+            "kugouCookie",
+            Configuration.CATEGORY_GENERAL,
+            kugouCookie,
+            "KuGou login credentials (token=xxx;userid=xxx), obtained from the browser login page");
     }
 }

@@ -27,7 +27,7 @@ public class MusicCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/music <next|stop>";
+        return "/music <next|stop|search|url>";
     }
 
     @Override
@@ -54,6 +54,37 @@ public class MusicCommand implements ICommand {
         } else if (args[0].equals("stop")) {
             proxy.stopCurrentSound(mc);
             say(sender, "音乐已停止");
+        } else if (args[0].equals("search")) {
+            if (args.length < 2) {
+                say(sender, "Usage: /music search <keyword>");
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < args.length; i++) {
+                if (i > 1) {
+                    sb.append(' ');
+                }
+                sb.append(args[i]);
+            }
+            say(sender, "Searching: " + sb);
+            List<Track> found = proxy.getMusicApi()
+                .search(sb.toString());
+            if (found.isEmpty()) {
+                say(sender, "No results found");
+                return;
+            }
+            for (int i = 0; i < Math.min(5, found.size()); i++) {
+                Track track = found.get(i);
+                say(sender, (i + 1) + ". " + track.title() + " (" + track.seconds() + "s)");
+            }
+        } else if (args[0].equals("url")) {
+            if (args.length < 2) {
+                say(sender, "Usage: /music url <hash>");
+                return;
+            }
+            String url = proxy.getMusicApi()
+                .getPlayUrl(args[1]);
+            say(sender, url != null ? "Play URL: " + url : "Could not get play URL (see log for reason)");
         } else {
             say(sender, getCommandUsage(sender));
         }
@@ -70,6 +101,8 @@ public class MusicCommand implements ICommand {
             List<String> options = new ArrayList<>();
             options.add("next");
             options.add("stop");
+            options.add("search");
+            options.add("url");
             return options;
         }
         return null;
