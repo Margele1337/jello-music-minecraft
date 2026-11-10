@@ -1,5 +1,8 @@
 package com.margele1337.jellomusic;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.settings.KeyBinding;
@@ -23,6 +26,7 @@ public class ClientProxy extends CommonProxy {
     private KeyBinding stopKey = new KeyBinding("key.jellomusic.stop", Keyboard.KEY_N, "key.categories.jellomusic");
     private KeyBinding panelKey = new KeyBinding("key.jellomusic.panel", Keyboard.KEY_G, "key.categories.jellomusic");
     private MusicApi musicApi;
+    private final Queue<Runnable> mainThreadTasks = new ConcurrentLinkedQueue<>();
 
     private void playTrack(Minecraft mc, Track track) {
         currentSound = new SongSound(track.soundName());
@@ -54,6 +58,10 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
+    public void runOnMainThread(Runnable task) {
+        mainThreadTasks.add(task);
+    }
+
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
@@ -69,6 +77,10 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
+        Runnable task;
+        while ((task = mainThreadTasks.poll()) != null) {
+            task.run();
+        }
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer != null && !playedJoinSound && !MusicPlayer.isEmpty()) {
             playedJoinSound = true;

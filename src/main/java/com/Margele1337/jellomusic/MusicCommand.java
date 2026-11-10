@@ -20,6 +20,17 @@ public class MusicCommand implements ICommand {
         sender.addChatMessage(new ChatComponentText(text));
     }
 
+    private void showSearchResults(ICommandSender sender, List<Track> found) {
+        if (found.isEmpty()) {
+            say(sender, "No results found");
+            return;
+        }
+        for (int i = 0; i < Math.min(5, found.size()); i++) {
+            Track track = found.get(i);
+            say(sender, (i + 1) + ". " + track.title() + " (" + track.seconds() + "s)");
+        }
+    }
+
     @Override
     public String getCommandName() {
         return "music";
@@ -66,27 +77,28 @@ public class MusicCommand implements ICommand {
                 }
                 sb.append(args[i]);
             }
-            say(sender, "Searching: " + sb);
-            List<Track> found = proxy.getMusicApi()
-                .search(sb.toString());
-            if (found.isEmpty()) {
-                say(sender, "No results found");
-                return;
-            }
-            for (int i = 0; i < Math.min(5, found.size()); i++) {
-                Track track = found.get(i);
-                say(sender, (i + 1) + ". " + track.title() + " (" + track.seconds() + "s)");
-            }
+            String keyword = sb.toString();
+            say(sender, "Searching: " + keyword + " ...");
+            new Thread(() -> {
+                List<Track> found = proxy.getMusicApi()
+                    .search(keyword);
+                proxy.runOnMainThread(() -> showSearchResults(sender, found));
+            }, "jello-music-search").start();
         } else if (args[0].equals("url")) {
             if (args.length < 2) {
                 say(sender, "Usage: /music url <hash>");
                 return;
             }
-            String url = proxy.getMusicApi()
-                .getPlayUrl(args[1]);
-            say(sender, url != null ? "Play URL: " + url : "Could not get play URL (see log for reason)");
-        } else {
-            say(sender, getCommandUsage(sender));
+            String hash = args[1];
+            say(sender, "Getting play URL...");
+            new Thread(() -> {
+                String url = proxy.getMusicApi()
+                    .getPlayUrl(hash);
+                proxy.runOnMainThread(
+                    () -> say(
+                        sender,
+                        url != null ? "Play URL: " + url : "Could not get play URL (see log for reason)"));
+            }, "jello-music-url").start();
         }
     }
 
