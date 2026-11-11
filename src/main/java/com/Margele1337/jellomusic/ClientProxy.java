@@ -27,6 +27,7 @@ public class ClientProxy extends CommonProxy {
     private KeyBinding panelKey = new KeyBinding("key.jellomusic.panel", Keyboard.KEY_G, "key.categories.jellomusic");
     private MusicApi musicApi;
     private final Queue<Runnable> mainThreadTasks = new ConcurrentLinkedQueue<>();
+    private final RemotePlayer remotePlayer = new RemotePlayer();
 
     private void playTrack(Minecraft mc, Track track) {
         currentSound = new SongSound(track.soundName());
@@ -51,11 +52,16 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void stopCurrentSound(Minecraft mc) {
+        remotePlayer.stop();
         if (currentSound != null) {
             mc.getSoundHandler()
                 .stopSound(currentSound);
             currentSound = null;
         }
+    }
+
+    public void playRemote(String url) {
+        remotePlayer.play(url, Config.volume);
     }
 
     public void runOnMainThread(Runnable task) {

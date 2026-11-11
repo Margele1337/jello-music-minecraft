@@ -99,6 +99,24 @@ public class MusicCommand implements ICommand {
                         sender,
                         url != null ? "Play URL: " + url : "Could not get play URL (see log for reason)"));
             }, "jello-music-url").start();
+        } else if (args[0].equals("play")) {
+            if (args.length < 2) {
+                say(sender, "Usage: /music play <hash>");
+                return;
+            }
+            proxy.stopCurrentSound(mc);
+            String hash = args[1];
+            say(sender, "Getting play URL...");
+            new Thread(() -> {
+                String url = proxy.getMusicApi()
+                    .getPlayUrl(hash);
+                if (url == null) {
+                    proxy.runOnMainThread(() -> say(sender, "Could not get play URL (see log for reason)"));
+                    return;
+                }
+                proxy.runOnMainThread(() -> say(sender, "Playing: " + hash));
+                proxy.playRemote(url);
+            }, "jello-music-play").start();
         }
     }
 
